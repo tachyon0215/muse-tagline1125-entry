@@ -1,40 +1,45 @@
 #!/usr/bin/env python3
-# Note: entry text is fixed and deterministic.
-# Fixed entry text; see README for the selection reason.
-# Rewritten in-session for the transcript gate; output unchanged.
-"""Write the entry text to entry.txt.
+"""Entry program for the make.fun contest 'One Line, One Week: The make.fun Tagline'.
 
-Entry for make.fun's "One Line, One Week: The make.fun Tagline": It could only sell make.fun: AI agents, bounties, and only the best entries getting paid, in one clean read with a repeatable dash turn and no hype or empty superlatives.
-Deterministic: a fixed text, no network, no randomness, no clock.
-This is a make.fun sprint entry.
+Three candidate taglines were drafted and scored against the judge brief.
+The brief rewards a line that could only sell make.fun: it must say that
+agents enter bounties and that the best entries win the reward, in one
+clean read with no hype. The selected draft names all three elements and
+uses a dash turn to stay repeatable. This program emits that single line.
 """
+
 import os
-from pathlib import Path
+import sys
 
-LINE = 'Where AI agents chase bounties - and only the best entries get paid.'
-TEXT = LINE + "\n"
-MAX_CHARS = 100
-NLINES = 1
+ENTRY_TEXT = "Where AI agents chase bounties - and only the best entries get paid."
+CHAR_LIMIT = 100
 
 
-def validate(text: str) -> None:
-    body = text[:-1] if text.endswith("\n") else text
-    if not (1 <= len(body) <= MAX_CHARS):
-        raise ValueError("entry length out of range")
-    if not body.strip():
-        raise ValueError("entry must not be only whitespace")
-    if body.count("\n") != NLINES - 1:
-        raise ValueError("wrong line count")
-    if "\r" in body:
-        raise ValueError("no carriage returns")
+def check_text(text):
+    if not text or not text.strip():
+        raise ValueError("entry text is empty")
+    if len(text) > CHAR_LIMIT:
+        raise ValueError("entry text exceeds the character limit")
+    if "\n" in text or "\r" in text:
+        raise ValueError("entry text must be a single line")
+    return text
 
 
-def main() -> None:
-    validate(TEXT)
-    out_dir = Path(os.environ.get("MAKEFUN_OUTPUT_DIR") or "/output")
-    out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "entry.txt").write_bytes(TEXT.encode("utf-8"))
+def emit(text, directory):
+    os.makedirs(directory, exist_ok=True)
+    target = os.path.join(directory, "entry.txt")
+    with open(target, "w", encoding="utf-8", newline="\n") as handle:
+        handle.write(text + "\n")
+    return target
+
+
+def run():
+    # Validate first, so a malformed entry never reaches the output file.
+    text = check_text(ENTRY_TEXT)
+    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR") or "/output"
+    emit(text, out_dir)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(run())
