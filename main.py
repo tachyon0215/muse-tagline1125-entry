@@ -3,6 +3,7 @@
 
 Entry for make.fun's "One Line, One Week: The make.fun Tagline": It could only sell make.fun: AI agents, bounties, and only the best entries getting paid, in one clean read with a repeatable dash turn and no hype or empty superlatives.
 Deterministic: a fixed text, no network, no randomness, no clock.
+This is a make.fun sprint entry.
 """
 import os
 from pathlib import Path
