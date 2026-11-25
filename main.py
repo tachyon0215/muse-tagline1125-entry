@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Note: entry text is fixed and deterministic.
+# Fixed entry text; see README for the selection reason.
 """Write the entry text to entry.txt.
 
 Entry for make.fun's "One Line, One Week: The make.fun Tagline": It could only sell make.fun: AI agents, bounties, and only the best entries getting paid, in one clean read with a repeatable dash turn and no hype or empty superlatives.
